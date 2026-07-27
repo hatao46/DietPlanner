@@ -71,8 +71,6 @@ PowerShellで次のコマンドを実行します。
 wsl --install -d Ubuntu
 ```
 
-yutah/yutah
-
 コマンド実行後に再起動を求められた場合は、Windowsを再起動します。
 
 ### 5.3 WSLの状態を確認する
@@ -160,21 +158,21 @@ make --version
 
 2026/07/28 実施記録
 ```bash
-yutah@hatao-pc:~$ git --version
+user@machine:~$ git --version
 git version 2.53.0
-yutah@hatao-pc:~$ curl --version
+user@machine:~$ curl --version
 curl 8.18.0 (x86_64-pc-linux-gnu) libcurl/8.18.0 OpenSSL/3.5.5 zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.2 libssh2/1.11.1 nghttp2/1.68.0 librtmp/2.3 mit-krb5/1.22.1 OpenLDAP/2.6.10
 Release-Date: 2026-01-07, security patched: 8.18.0-1ubuntu2.3
 Protocols: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns ldap ldaps mqtt pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp ws wss
 Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
-yutah@hatao-pc:~$ make --version
+user@machine:~$ make --version
 GNU Make 4.4.1
 Built for x86_64-pc-linux-gnu
 Copyright (C) 1988-2023 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
-yutah@hatao-pc:~$
+user@machine:~$
 ```
 
 ---
@@ -300,6 +298,10 @@ GitHub
       └ SSH and GPG keys
           └ New SSH key
 ```
+
+github右上のアカウント設定から行う。
+
+※リポジトリのsettingsからではないので要注意！
 
 ### 9.5 接続を確認する
 
