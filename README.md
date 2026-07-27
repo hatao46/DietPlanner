@@ -520,19 +520,24 @@ docker compose exec node npx playwright test
 
 ## 17. ドキュメント
 
-プロジェクトが進んだ段階で、以下のドキュメントを追加します。
+詳細な設計・運用ドキュメントは`docs`ディレクトリで管理します。現在の構成は次のとおりです。
 
 ```text
 docs/
-├─ architecture.md
-├─ database-design.md
-├─ screen-list.md
-├─ api-design.md
-├─ deployment.md
-├─ rollback.md
-├─ monitoring.md
-└─ disaster-recovery.md
+├─ requirements/
+│   ├─ functional-requirements.md      機能要件定義書
+│   └─ non-functional-requirements.md  非機能要件定義書
+├─ architecture.md                     アーキテクチャ設計書
+├─ security.md                         セキュリティ設計書
+├─ backup-restore.md                   バックアップ・リストア設計書
+├─ monitoring.md                       監視設計書
+└─ runbook.md                          運用手順書(デプロイ・障害対応・ロールバック含む)
 ```
+
+実装の進行に合わせて、以下の追加を予定します。
+
+* database-design.md(データベース設計書)
+* screen-design.md(画面設計書)
 
 READMEには概要を記載し、詳細な設計や運用手順は`docs`ディレクトリへ分離します。
 
