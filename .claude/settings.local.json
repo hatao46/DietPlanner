@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/yutah/src/DietPlanner/docs/setup/**)",
+      "Read(///wsl.localhost/Ubuntu/home/yutah/src/DietPlanner/docs/setup/**)"
+    ]
+  }
+}
