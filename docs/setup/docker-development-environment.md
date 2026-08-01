@@ -19,7 +19,7 @@ Laravel Sailをそのまま使うのではなく、以下の役割を個別の�
 
 - WSL2とUbuntuの導入
 - Docker DesktopとWSL Integrationの有効化
-- `~/src/diet-planner`へのLaravelプロジェクト作成
+- `~/src/DietPlanner`へのLaravelプロジェクト作成
 - WSL内で`docker version`と`docker compose version`が成功
 
 推奨する文書の順序です。
@@ -69,7 +69,7 @@ Laravel Sailをそのまま使うのではなく、以下の役割を個別の�
 ## 6. ディレクトリ構成
 
 ```text
-diet-planner/
+DietPlanner/
 ├─ app/
 ├─ bootstrap/
 ├─ config/
@@ -97,7 +97,7 @@ diet-planner/
 ## 7. 作業ディレクトリ
 
 ```bash
-cd ~/src/diet-planner
+cd ~/src/DietPlanner
 pwd
 docker version
 docker compose version
@@ -246,12 +246,30 @@ server {
 
 `app:9000`の`app`はComposeのサービス名です。
 
-## 12. Composeファイル
+## 12. node設定
+
+`docker/node/Dockerfile`
+
+```docker
+FROM node:22-bookworm AS node
+
+FROM php:8.4-cli-bookworm
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+WORKDIR /var/www/html
+```
+
+## 13. Composeファイル
 
 プロジェクト直下の`compose.yaml`
 
 ```yaml
-name: diet-planner
+name: diet_planner
 
 services:
   app:
@@ -261,7 +279,7 @@ services:
       args:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
-    image: diet-planner-app:local
+    image: diet_planner-app:local
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
@@ -325,7 +343,9 @@ services:
     restart: unless-stopped
 
   node:
-    image: node:22-alpine
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
     working_dir: /var/www/html
     user: "${UID:-1000}:${GID:-1000}"
     environment:
@@ -336,10 +356,13 @@ services:
     volumes:
       - ./:/var/www/html
       - node-modules:/var/www/html/node_modules
-    command: ["sh", "-lc", "npm install && npm run dev -- --host 0.0.0.0"]
+    command:
+      - sh
+      - -lc
+      - npm install && npm run dev -- --host 0.0.0.0
     networks:
       - app-network
-    restart: unless-stopped
+    restart: "no"
 
   mailpit:
     image: axllent/mailpit:latest
@@ -362,7 +385,7 @@ volumes:
 
 Mailpitも、運用を固定する段階では確認済みバージョンへ固定します。
 
-## 13. `.dockerignore`
+## 14. `.dockerignore`
 
 ```gitignore
 .git
@@ -386,7 +409,7 @@ test-results
 
 `.dockerignore`は、不要ファイルや秘密情報をDockerのBuild Contextへ送らないための設定です。
 
-## 14. `.env`のDocker用設定
+## 15. `.env`のDocker用設定
 
 UIDとGIDを確認します。
 
@@ -443,13 +466,13 @@ MAIL_HOST=mailpit
 MAIL_PORT=1025
 MAIL_USERNAME=null
 MAIL_PASSWORD=null
-MAIL_FROM_ADDRESS="noreply@diet-planner.local"
+MAIL_FROM_ADDRESS="noreply@DietPlanner.local"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 コンテナ間接続では`localhost`ではなく、`db`、`redis`、`mailpit`のサービス名を使用します。
 
-## 15. `.env.example`
+## 16. `.env.example`
 
 `.env.example`にも必要な変数名を記載しますが、本番の秘密情報は記載しません。
 
@@ -490,7 +513,7 @@ MAILPIT_SMTP_FORWARD_PORT=1025
 MAILPIT_UI_FORWARD_PORT=8025
 ```
 
-## 16. Vite設定
+## 17. Vite設定
 
 既存の`vite.config.ts`または`vite.config.js`の`defineConfig`へ、次の`server`設定を追加します。
 
@@ -510,7 +533,7 @@ server: {
 
 Starter Kitが生成した既存の`plugins`や入力ファイル設定は維持してください。
 
-## 17. 設定検証とビルド
+## 18. 設定検証とビルド
 
 ```bash
 docker compose config
@@ -518,7 +541,7 @@ docker compose config --services
 docker compose build --no-cache app
 ```
 
-## 18. 起動
+## 19. 起動
 
 ```bash
 docker compose up -d
@@ -534,7 +557,7 @@ docker compose logs -f nginx
 docker compose logs -f node
 ```
 
-## 19. PHPとComposer
+## 20. PHPとComposer
 
 ```bash
 docker compose exec app php -v
@@ -543,7 +566,7 @@ docker compose exec app php -m | grep -E 'pdo_pgsql|redis'
 docker compose exec --user app app composer install
 ```
 
-## 20. APP_KEYと権限
+## 21. APP_KEYと権限
 
 ```bash
 docker compose exec --user app app php artisan key:generate
@@ -555,11 +578,13 @@ grep '^APP_KEY=' .env
 ```bash
 sudo chown -R "$(id -u):$(id -g)" storage bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
+docker compose run --rm --user root node \
+  chown -R 1000:1000 /var/www/html/node_modules
 ```
 
 `chmod -R 777`は使用しません。
 
-## 21. PostgreSQL
+## 22. PostgreSQL
 
 ```bash
 docker compose exec db psql -U diet_planner -d diet_planner
@@ -576,11 +601,11 @@ SELECT version();
 Laravelから確認します。
 
 ```bash
-docker compose exec --user app app php artisan migrate:status
 docker compose exec --user app app php artisan migrate
+docker compose exec --user app app php artisan migrate:status
 ```
 
-## 22. Redis
+## 23. Redis
 
 ```bash
 docker compose exec redis redis-cli ping
@@ -600,7 +625,7 @@ cache()->get('docker-test');
 exit
 ```
 
-## 23. ブラウザ確認
+## 24. ブラウザ確認
 
 | 対象 | URL |
 |---|---|
@@ -608,7 +633,7 @@ exit
 | Mailpit | `http://localhost:8025` |
 | Vite | `http://localhost:5173` |
 
-## 24. メール確認
+## 25. メール確認
 
 ```bash
 docker compose exec --user app app php artisan tinker
@@ -624,7 +649,7 @@ exit
 
 Mailpitで受信を確認します。
 
-## 25. テスト
+## 26. テスト
 
 ```bash
 docker compose exec --user app app php artisan test
@@ -632,7 +657,7 @@ docker compose exec --user app app ./vendor/bin/pint --test
 docker compose exec node npm run build
 ```
 
-## 26. よく使うコマンド
+## 27. よく使うコマンド
 
 ```bash
 docker compose up -d
@@ -655,7 +680,7 @@ docker compose down -v
 
 この操作はローカルDBデータを削除します。
 
-## 27. Makefile例
+## 28. Makefile例
 
 ```makefile
 .PHONY: up down stop build ps logs shell test migrate fresh
@@ -693,7 +718,7 @@ fresh:
 
 Makefileのコマンド行はタブでインデントします。
 
-## 28. Git管理
+## 29. Git管理
 
 Gitへ追加します。
 
@@ -723,7 +748,7 @@ git status
 git check-ignore -v .env
 ```
 
-## 29. トラブルシューティング
+## 30. トラブルシューティング
 
 ### Docker daemonへ接続できない
 
@@ -790,7 +815,7 @@ docker compose down -v
 docker compose up -d
 ```
 
-## 30. セキュリティ上の注意
+## 31. セキュリティ上の注意
 
 - `.env`をGitへcommitしない
 - ローカルのパスワードを本番で再利用しない
@@ -801,7 +826,7 @@ docker compose up -d
 - Docker Desktopとベースイメージを定期更新する
 - 本番ではソースコードをBind Mountしない
 
-## 31. 本番との差
+## 32. 本番との差
 
 | 開発 | 本番 |
 |---|---|
@@ -813,7 +838,7 @@ docker compose up -d
 | `.env` | Parameter Store等 |
 | `APP_DEBUG=true` | `APP_DEBUG=false` |
 
-## 32. 参考資料
+## 33. 参考資料
 
 - https://docs.docker.com/desktop/features/wsl/
 - https://docs.docker.com/desktop/features/wsl/use-wsl/
@@ -821,7 +846,7 @@ docker compose up -d
 - https://laravel.com/docs/13.x/installation
 - https://laravel.com/docs/13.x/deployment
 
-## 33. 変更履歴
+## 34. 変更履歴
 
 | バージョン | 日付 | 内容 |
 |---|---|---|

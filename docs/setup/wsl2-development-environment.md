@@ -184,7 +184,7 @@ user@machine:~$
 ### 推奨する配置
 
 ```text
-/home/<Linuxユーザー名>/src/diet-planner
+/home/<Linuxユーザー名>/src/DietPlanner
 ```
 
 例：
@@ -197,7 +197,7 @@ cd ~/src
 ### 推奨しない配置
 
 ```text
-/mnt/c/Users/<Windowsユーザー名>/Documents/diet-planner
+/mnt/c/Users/<Windowsユーザー名>/Documents/DietPlanner
 ```
 
 `/mnt/c`配下でも開発は可能ですが、次の問題が発生する可能性があります。
@@ -459,7 +459,7 @@ Visual Studio Codeを使用する場合は、WSL拡張機能をインストー�
 Ubuntuでプロジェクトディレクトリへ移動します。
 
 ```bash
-cd ~/src/diet-planner
+cd ~/src/DietPlanner
 ```
 
 次のコマンドを実行します。

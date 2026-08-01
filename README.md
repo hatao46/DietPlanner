@@ -473,7 +473,7 @@ Playwrightを使って実際のブラウザ操作を確認します。
 
 ```bash
 git clone <repository-url>
-cd diet-planner
+cd DietPlanner
 
 cp .env.example .env
 
