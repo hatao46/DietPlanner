@@ -64,7 +64,7 @@ Diet PlannerのLaravelアプリケーションを新規作成し、ローカル�
 
 ### プロジェクト作成
 
-- [ ] `~/src/diet-planner`がある
+- [ ] `~/src/DietPlanner`がある
 - [ ] Laravel 13が作成されている
 - [ ] Vue Starter Kitを選択している
 - [ ] Inertia、Vue 3、TypeScriptがある
@@ -91,7 +91,7 @@ WSL
   └ Docker
       └ 一時Composerコンテナ
           └ Laravel Installer
-              └ diet-planner生成
+              └ DietPlanner生成
 ```
 
 作成後のPHP、Composer、Node.jsもDockerコンテナ内で実行します。
@@ -105,10 +105,10 @@ docker version
 docker compose version
 ```
 
-`diet-planner`がすでにある場合は確認します。
+`DietPlanner`がすでにある場合は確認します。
 
 ```bash
-ls -la ~/src/diet-planner
+ls -la ~/src/DietPlanner
 ```
 
 既存ファイルがある場合は、本書の「既存ディレクトリがある場合」を参照します。
@@ -130,11 +130,11 @@ docker run --rm -it \
   composer:2 \
   -lc '
     composer global require laravel/installer &&
-    /tmp/composer/vendor/bin/laravel new diet-planner
+    /tmp/composer/vendor/bin/laravel new DietPlanner
   '
 ```
 
-処理後、一時コンテナは削除されます。プロジェクトファイルは`~/src/diet-planner`へ残ります。
+処理後、一時コンテナは削除されます。プロジェクトファイルは`~/src/DietPlanner`へ残ります。
 
 ## 9. Laravel Installerの選択
 
@@ -159,7 +159,7 @@ docker run --rm -it \
 ## 10. 作成結果
 
 ```bash
-cd ~/src/diet-planner
+cd ~/src/DietPlanner
 ls -la
 ```
 
@@ -206,7 +206,7 @@ id -g
 root所有の場合です。
 
 ```bash
-sudo chown -R "$(id -u):$(id -g)" ~/src/diet-planner
+sudo chown -R "$(id -u):$(id -g)" ~/src/DietPlanner
 ```
 
 ## 12. 既存ディレクトリがある場合
@@ -230,15 +230,15 @@ docker run --rm -it \
   composer:2 \
   -lc '
     composer global require laravel/installer &&
-    /tmp/composer/vendor/bin/laravel new diet-planner-bootstrap
+    /tmp/composer/vendor/bin/laravel new DietPlanner-bootstrap
   '
 ```
 
 ### 既存ディレクトリをバックアップ
 
 ```bash
-cp -a diet-planner \
-  "diet-planner.backup.$(date +%Y%m%d%H%M%S)"
+cp -a DietPlanner \
+  "DietPlanner.backup.$(date +%Y%m%d%H%M%S)"
 ```
 
 ### 統合
@@ -251,14 +251,14 @@ sudo apt install -y rsync
 ```bash
 rsync -a \
   --exclude='.git' \
-  diet-planner-bootstrap/ \
-  diet-planner/
+  DietPlanner-bootstrap/ \
+  DietPlanner/
 ```
 
 同名ファイルの上書きには注意します。統合後に一時ディレクトリを削除します。
 
 ```bash
-rm -rf diet-planner-bootstrap
+rm -rf DietPlanner-bootstrap
 ```
 
 ## 13. `.env`と`.env.example`
@@ -359,7 +359,7 @@ Docker構築後、以下へ戻ります。
 ## 18. コンテナ起動
 
 ```bash
-cd ~/src/diet-planner
+cd ~/src/DietPlanner
 docker compose up -d --build
 docker compose ps
 ```
@@ -630,7 +630,7 @@ git push origin v0.1.0
 ### Permission denied
 
 ```bash
-sudo chown -R "$(id -u):$(id -g)" ~/src/diet-planner
+sudo chown -R "$(id -u):$(id -g)" ~/src/DietPlanner
 ```
 
 ### プロジェクトディレクトリが空でない
